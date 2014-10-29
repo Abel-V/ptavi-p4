@@ -36,11 +36,11 @@ class SIPRegisterHandler(SocketServer.DatagramRequestHandler):
             lista = [self.client_address[0], time.strftime(fecha_entrada),
             expires]
             self.diccionario[direccion[-1]] = lista
-            self.wfile.write("SIP/2.0 200 OK" + '\r\n' + '\r\n')
+            self.wfile.write("SIP/2.0 200 OK" + '\r\n\r\n')
             print "El cliente nos manda " + line
             if int(expires) == 0:
                 del self.diccionario[direccion[-1]]
-                self.wfile.write("SIP/2.0 200 OK" + '\r\n' + '\r\n')
+                self.wfile.write("SIP/2.0 200 OK" + '\r\n\r\n')
             self.caducidad(hora_actual)
         self.register2file()
 
