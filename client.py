@@ -23,7 +23,7 @@ try:
 
         print "Enviando: " + LINE
         my_socket.send(REGISTER + " sip:" + LINE + " SIP 2.0" + '\r\n'
-        + "Expires: " + str(EXPIRES) + '\r\n' + '\r\n')
+        + "Expires: " + str(EXPIRES) + '\r\n\r\n')
         data = my_socket.recv(1024)
 
         print 'Recibido -- ', data
