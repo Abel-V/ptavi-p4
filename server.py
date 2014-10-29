@@ -24,7 +24,7 @@ class SIPRegisterHandler(SocketServer.DatagramRequestHandler):
         line = "User\tIP\tExpires\r\n"
         for direccion in self.direcciones.keys():
             hora = time.strftime('%Y-%m-%d %H:%M:%S', \
-time.gmtime(self.direcciones[direccion][1]))
+            time.gmtime(self.direcciones[direccion][1]))
             line += direccion + "\t" + self.direcciones[direccion][0] + "\t"
             line += hora + "\r\n"
         fich.write(line)
@@ -45,21 +45,18 @@ time.gmtime(self.direcciones[direccion][1]))
             elements = line.split()
             direccion = (elements[1].split(":"))[1]
             expires = elements[-1]
-            if expires > "0":
+            if elements[0] == "REGISTER":
                 hora = float(expires) + time.time()
                 self.direcciones[direccion] = (self.client_address[0], hora)
+                for direccion in self.direcciones.keys():
+                    if self.direcciones[direccion][1] <= time.time():
+                        del self.direcciones[direccion]
                 self.wfile.write("SIP/2.0 200 OK \r\n\r\n")
-            elif expires == "0":
-                if direccion in self.direcciones:
-                    del self.direcciones[direccion]
-                    self.wfile.write("SIP/2.0 200 OK \r\n\r\n")
-                else:
-                    self.wfile.write("SIP/2.0 404 NOT FOUND \r\n\r\n")
-            for direccion in self.direcciones.keys():
-                if self.direcciones[direccion][1] < time.time():
-                    del self.direcciones[direccion]
-            self.register2file()
-
+                self.register2file()
+            else:
+                print "Método desconocido"
+                
+                
 if __name__ == "__main__":
     # Creamos servidor de sip y escuchamos
     serv = SocketServer.UDPServer(("", int(sys.argv[1])), SIPRegisterHandler)
